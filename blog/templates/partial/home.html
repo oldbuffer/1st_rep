@@ -1,10 +1,62 @@
-{% extends 'base.html' %}
-{% block head %}
-<title>Главная</title>
-<meta name="description" content="Главная страница блога"/>
-<meta name="keywords" content="блог"/>
-{% endblock %}
- 
-{% block body %}
-  <h1>Главная</h1>
-{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+<style>
+    head {
+        background-color: #cb2ad4;
+    }
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #f4e1f5;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+    .card {
+        box-shadow: 0 16px 48px #E3E7EB;
+    }
+    img {
+        width: 400px;
+        height: auto;
+        display: block;
+    }
+
+
+</style>
+
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class=" site-heading my-4 mt-3 text-black"> Welcome to my awesome Blog </h3>
+                    <p class="text-black">We Love Django As much as you do..! &nbsp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8 mt-3 left">
+            {% for post in post_list %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
+                    <p class="card-text">{{post.content|slice:":200" }}</p>
+                    <p><img src="{{ post.image_url|default_if_none:'#' }}" width="400" height=auto/></p>
+                    <a href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{%endblock%}

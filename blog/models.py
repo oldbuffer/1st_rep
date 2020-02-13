@@ -1,24 +1,35 @@
 from django.db import models
+from django.contrib.auth.models import User
 
+STATUS = (
+    (0,"Draft"),
+    (1,"Publish")
+)
 # Create your models here.
 class Post(models.Model):
-    title = models.CharField(max_length=120)
-    description = models.TextField(default="Описание")
-    keywords = models.CharField(max_length=120, default="Ключевые слова")
-    image = models.FileField(null=True, blank=True)
+    title = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
+    author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts')
+    updated_on = models.DateTimeField(auto_now= True)
+    image = models.ImageField(upload_to='media/')
     content = models.TextField()
-    visible = models.BooleanField(default=1)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(choices=STATUS, default=0)
 
-    def __unicode__(self):
-        return self.title
+    class Meta:
+        ordering = ['-created_on']
 
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        return "/%s/" %(self.id)
+    def __unicode__(self):
+        return self.title
 
-    class Meta:
-        ordering = ["-id", "-timestamp"]
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
+
+
+
